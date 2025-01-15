@@ -1,0 +1,407 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Perfil {% endblock %} 
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}
+<link rel="stylesheet" href="{{ ASSETS_ROOT }}/css/select2.min.css">
+{% endblock stylesheets %}
+
+{% block content %}
+    <!-- [ Main Content ] start -->
+    <div class="pcoded-main-container">
+        <div class="pcoded-wrapper">
+            <div class="pcoded-content">
+                <div class="pcoded-inner-content">
+                    <div class="main-body">
+                        <div class="page-wrapper">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    {% if messages %}
+                                        <ul class="messages">
+                                            {% for message in messages %}
+                                                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                    {% endif %}
+                                </div>
+                                <!-- Editor de usuário para login de integrador -->
+                                {% if clientes %}
+                                    <div class="col-sm-12">
+                                        <div class="card">
+                                            <div class="card-header">
+                                                <h5>Editar Cliente</h5>
+                                            </div>
+                                            <div class="card-block">
+                                                <div class="row">
+                                                    <div class="col-sm-12 mb-4">
+                                                        <div class="form-group">
+                                                            <form action="{% url 'profile_user' %}" method="get">
+                                                                {% csrf_token %}
+                                                                <input type="hidden" name="form-selecionado" value="select-cliente">
+                                                                <label for="cliente">Selecione um cliente:</label>
+                                                                <select name="cliente" id="cliente" class="form-control mb-4">
+                                                                    {% for cliente in clientes %}
+                                                                        <option value="{{ cliente.id }}" {% if request.GET.cliente == cliente.id|stringformat:"s" %}selected{% endif %}>{{ cliente.plant_name }}</option>
+                                                                    {% endfor %}
+                                                                </select>
+                                                                <input type="submit" value="Selecionar" class='btn btn-secondary'>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                                <!-- Final de seletor de usuário para integrador -->
+                                {% if not form_criar_usuario %}
+                                    <div class="col-sm-12">
+                                        <div class="card">
+                                            <div class="card-header">
+                                                <h5>Dados do Usuário {% if cliente_plant_name %} - {{ cliente_plant_name }} {% endif %}</h5>
+                                            </div>
+                                            <div class="card-block">
+                                                <div class="row">
+                                                    <div class="col-sm-12 mb-4">
+                                                        <div class="form-group">
+                                                            <form action="{% url 'profile_user' %}" method="post">
+                                                                {% csrf_token %}
+                                                                <input type="hidden" name="form-selecionado" value="usuario">
+                                                                <input type="hidden" name="client_form_id" value="{{ client_form_id }}">
+                                                                {% if form_usuario.errors %}
+                                                                    <div class="alert alert-danger">
+                                                                        <ul>
+                                                                            {% for field in form_usuario %}
+                                                                                {% for error in field.errors %}
+                                                                                    <li>{{ error }}</li>
+                                                                                {% endfor %}
+                                                                            {% endfor %}
+                                                                            {% for error in form_usuario.non_field_errors %}
+                                                                                <li>{{ error }}</li>
+                                                                            {% endfor %}
+                                                                        </ul>
+                                                                    </div>
+                                                                {% endif %}
+                                                                <div class="row mb-4">
+                                                                    <div class="form-group col {% if form_usuario.username.errors %}has-error{% endif %}">
+                                                                        {{ form_usuario.username.label_tag }}
+                                                                        {{ form_usuario.username }}
+                                                                    </div>
+                                                                    <div class="form-group col {% if form_usuario.email.errors %}has-error{% endif %}">
+                                                                        {{ form_usuario.email.label_tag }}
+                                                                        {{ form_usuario.email }}
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row mb-4">
+                                                                    <div class="form-group col {% if form_usuario.first_name.errors %}has-error{% endif %}">
+                                                                        {{ form_usuario.first_name.label_tag }}
+                                                                        {{ form_usuario.first_name }}
+                                                                    </div>
+                                                                    <div class="form-group col {% if form_usuario.last_name.errors %}has-error{% endif %}">
+                                                                        {{ form_usuario.last_name.label_tag }}
+                                                                        {{ form_usuario.last_name }}
+                                                                    </div>
+                                                                </div>
+                                                                <input type="submit" value="Salvar" class='btn btn-secondary'>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12">
+                                        <div class="card">
+                                            <div class="card-header">
+                                                <h5>Alteração de senha</h5>
+                                            </div>
+                                            <div class="card-block">
+                                                <div class="row">
+                                                    <div class="col-sm-12 mb-4">
+                                                        <div class="form-group">
+                                                            <form action="{% url 'profile_user' %}" method="post">
+                                                                {% csrf_token %}
+                                                                <input type="hidden" name="form-selecionado" value="senha">
+                                                                <input type="hidden" name="client_form_id" value="{{ client_form_id }}">
+                                                                {% if form_senha.errors %}
+                                                                    <div class="alert alert-danger">
+                                                                        <ul>
+                                                                            {% for field in form_senha %}
+                                                                                {% for error in field.errors %}
+                                                                                    <li>{{ error }}</li>
+                                                                                {% endfor %}
+                                                                            {% endfor %}
+                                                                            {% for error in form_senha.non_field_errors %}
+                                                                                <li>{{ error }}</li>
+                                                                            {% endfor %}
+                                                                        </ul>
+                                                                    </div>
+                                                                {% endif %}
+                                                                <div class="row mb-4">
+                                                                    <div class="form-group col {% if form_senha.old_password.errors %}has-error{% endif %}">
+                                                                        {{ form_senha.old_password.label_tag }}
+                                                                        {{ form_senha.old_password }}
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row mb-4">
+                                                                    <div class="form-group col {% if form_senha.new_password2.errors %}has-error{% endif %}">
+                                                                        {{ form_senha.new_password2.label_tag }}
+                                                                        {{ form_senha.new_password2 }}
+                                                                    </div>
+                                                                    <div class="form-group col {% if form_senha.new_password1.errors %}has-error{% endif %}">
+                                                                        {{ form_senha.new_password1.label_tag }}
+                                                                        {{ form_senha.new_password1 }}
+                                                                    </div>
+                                                                </div>
+                                                                <input type="submit" value="Salvar" class='btn btn-secondary'>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>  
+                                {% else %} 
+                                    <div class="col-sm-12">
+                                        <div class="card">
+                                            <div class="card-header">
+                                                <h5>Criar Usuário</h5>
+                                            </div>
+                                            <div class="card-block">
+                                                <div class="row">
+                                                    <div class="col-sm-12 mb-4">
+                                                        <div class="form-group">
+                                                            <form action="{% url 'profile_user' %}" method="post">
+                                                                {% csrf_token %}
+                                                                <input type="hidden" name="form-selecionado" value="criar-usuario">
+                                                                <input type="hidden" name="client_form_id" value="{{ client_form_id }}">
+                                                                {% if form_criar_usuario.errors %}
+                                                                    <div class="alert alert-danger">
+                                                                        <ul>
+                                                                            {% for field in form_criar_usuario %}
+                                                                                {% for error in field.errors %}
+                                                                                    <li>{{ error }}</li>
+                                                                                {% endfor %}
+                                                                            {% endfor %}
+                                                                            {% for error in form_criar_usuario.non_field_errors %}
+                                                                                <li>{{ error }}</li>
+                                                                            {% endfor %}
+                                                                        </ul>
+                                                                    </div>
+                                                                {% endif %}
+                                                                <div class="row mb-4">
+                                                                    <div class="form-group col {% if form_criar_usuario.username.errors %}has-error{% endif %}">
+                                                                        {{ form_criar_usuario.username.label_tag }}
+                                                                        {{ form_criar_usuario.username }}
+                                                                    </div>
+                                                                    <div class="form-group col {% if form_criar_usuario.email.errors %}has-error{% endif %}">
+                                                                        {{ form_criar_usuario.email.label_tag }}
+                                                                        {{ form_criar_usuario.email }}
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row mb-4">
+                                                                    <div class="form-group col {% if form_criar_usuario.first_name.errors %}has-error{% endif %}">
+                                                                        {{ form_criar_usuario.first_name.label_tag }}
+                                                                        {{ form_criar_usuario.first_name }}
+                                                                    </div>
+                                                                    <div class="form-group col {% if form_criar_usuario.last_name.errors %}has-error{% endif %}">
+                                                                        {{ form_criar_usuario.last_name.label_tag }}
+                                                                        {{ form_criar_usuario.last_name }}
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row mb-4">
+                                                                    <div class="form-group col {% if form_criar_usuario.senha.errors %}has-error{% endif %}">
+                                                                        {{ form_criar_usuario.senha.label_tag }}
+                                                                        {{ form_criar_usuario.senha }}
+                                                                    </div>
+                                                                    <div class="form-group col {% if form_criar_usuario.confirmar_senha.errors %}has-error{% endif %}">
+                                                                        {{ form_criar_usuario.confirmar_senha.label_tag }}
+                                                                        {{ form_criar_usuario.confirmar_senha }}
+                                                                    </div>
+                                                                </div>
+                                                                <input type="submit" value="Salvar" class='btn btn-secondary'>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div> 
+                                {% endif %}                            
+                                <div class="col-sm-12">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h5>Dados da Concessionária</h5>
+                                        </div>
+                                        <div class="card-block">
+                                            <div class="row">
+                                                <div class="col-sm-12 mb-4">
+                                                    <div class="form-group">
+                                                        <form action="{% url 'profile_user' %}" method="post">
+                                                            {% csrf_token %}
+                                                            <input type="hidden" name="form-selecionado" value="concessionaria">
+                                                            <input type="hidden" name="client_form_id" value="{{ client_form_id }}">
+                                                            {% if form_credencial_concessionaria.errors %}
+                                                                <div class="alert alert-danger">
+                                                                    <ul>
+                                                                        {% for field in form_credencial_concessionaria %}
+                                                                            {% for error in field.errors %}
+                                                                                <li>{{ error }}</li>
+                                                                            {% endfor %}
+                                                                        {% endfor %}
+                                                                        {% for error in form_credencial_concessionaria.non_field_errors %}
+                                                                            <li>{{ error }}</li>
+                                                                        {% endfor %}
+                                                                    </ul>
+                                                                </div>
+                                                            {% endif %}
+                                                            <div class="row mb-4">
+                                                                <div class="form-group col {% if form_credencial_concessionaria.concessionaria.errors %}has-error{% endif %}">
+                                                                    {{ form_credencial_concessionaria.concessionaria.label_tag }}
+                                                                    {{ form_credencial_concessionaria.concessionaria }}
+                                                                </div>
+                                                                <div class="form-group col {% if form_credencial_concessionaria.cpf_cnpj.errors %}has-error{% endif %}">
+                                                                    {{ form_credencial_concessionaria.cpf_cnpj.label_tag }}
+                                                                    {{ form_credencial_concessionaria.cpf_cnpj }}
+                                                                </div>
+                                                            </div>
+                                                            <div class="row mb-4">
+                                                                <div class="form-group col {% if form_credencial_concessionaria.usuario.errors %}has-error{% endif %}">
+                                                                    {{ form_credencial_concessionaria.usuario.label_tag }}
+                                                                    {{ form_credencial_concessionaria.usuario }}
+                                                                </div>
+                                                                <div class="form-group col {% if form_credencial_concessionaria.senha.errors %}has-error{% endif %}">
+                                                                    {{ form_credencial_concessionaria.senha.label_tag }}
+                                                                    {{ form_credencial_concessionaria.senha }}
+                                                                </div>
+                                                            </div>
+                                                            {% if user_type == 'admin' %}
+                                                            <div class="row mb-4">
+                                                                <div class="form-group col-3 {% if form_credencial_concessionaria.geracao_projeto.errors %}has-error{% endif %}">
+                                                                    {{ form_credencial_concessionaria.geracao_projeto.label_tag }}
+                                                                    <div class="d-flex">
+                                                                        {{ form_credencial_concessionaria.geracao_projeto }}
+                                                                    <i class="feather icon-help-circle" title="Digite a geração média do projeto original em kWh" style="font-size: 1.5em;"></i>
+                                                                </div>
+                                                                </div>
+                                                            </div>
+                                                            <button type="submit" name="buscar-dados-rge" class="btn btn-secondary">
+                                                                Buscar dados da Conta 
+                                                                <span class="spinner-border spinner-border-sm text-light" role="status" id="spinner" style="display: none;">
+                                                                    <span class="sr-only">Loading...</span>
+                                                                </span>
+                                                            </button>
+                                                            {% endif %}
+                                                            <input type="submit" value="Salvar" class='btn btn-secondary'>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12">
+                                    
+                                    {# {% if user_type != 'admin' or client_id %} #}
+                                    {# Essa acima é a forma correta #}
+                                    {% if user_type == 'admin' %}
+                                        <div class="card">
+                                            <div class="card-header">
+                                                <div class="d-flex">
+                                                    <h5>Dados do Inversor</h5>
+                                                    <i class="feather icon-help-circle" title="No momento esta sessão é apenas para inserção de dados novos" style="font-size: 1.5em;"></i>
+                                                </div>
+                                            </div>
+                                            <div class="card-block">
+                                                <div class="row">
+                                                    <div class="col-sm-12 mb-4">
+                                                        <div class="form-group">
+                                                            <form action="{% url 'profile_user' %}" method="post">
+                                                                {% csrf_token %}
+                                                                <input type="hidden" name="form-selecionado" value="inversor">
+                                                                <input type="hidden" name="client_form_id" value="{{ client_form_id }}">
+                                                                {% if form_credencial_inversor.errors %}
+                                                                    <div class="alert alert-danger">
+                                                                        <ul>
+                                                                            {% for field in form_credencial_inversor %}
+                                                                                {% for error in field.errors %}
+                                                                                    <li>{{ error }}</li>
+                                                                                {% endfor %}
+                                                                            {% endfor %}
+                                                                            {% for error in form_credencial_inversor.non_field_errors %}
+                                                                                <li>{{ error }}</li>
+                                                                            {% endfor %}
+                                                                        </ul>
+                                                                    </div>
+                                                                {% endif %}
+                                                                <div class="row mb-4">
+                                                                    <div class="form-group col {% if form_credencial_inversor.inversor.errors %}has-error{% endif %}">
+                                                                        {{ form_credencial_inversor.inversor.label_tag }}
+                                                                        {{ form_credencial_inversor.inversor }}
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row mb-4">
+                                                                    <div class="form-group col {% if form_credencial_inversor.usuario.errors %}has-error{% endif %}">
+                                                                        {{ form_credencial_inversor.usuario.label_tag }}
+                                                                        {{ form_credencial_inversor.usuario }}
+                                                                    </div>
+                                                                    <div class="form-group col {% if form_credencial_inversor.senha.errors %}has-error{% endif %}">
+                                                                        {{ form_credencial_inversor.senha.label_tag }}
+                                                                        {{ form_credencial_inversor.senha }}
+                                                                    </div>
+                                                                </div>
+                                                                <input type="submit" value="Salvar" class='btn btn-secondary'>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+<script src="{{ ASSETS_ROOT }}/js/select2.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#teste').select2({
+            theme: "dark"
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        // Função para extrair o valor do client-id da tag body
+        function getClientIdFromBody() {
+            return $('body').attr('client-id');
+        }
+
+        // Atualiza todos os campos hidden com o valor do client-id
+        function updateClientFormIds() {
+            const clientId = getClientIdFromBody();
+            $('input[name="client_form_id"]').val(clientId);
+        }
+
+        // Chame a função para atualizar os campos hidden no carregamento da página
+        updateClientFormIds();
+    });
+</script>
+<script>
+    $(document).ready(function() {
+        $('button[name="buscar-dados-rge"]').click(function() {
+            $(this).find('.spinner-border').show();
+        });
+    });
+</script>
+{% endblock javascripts %}
