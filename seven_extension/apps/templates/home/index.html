@@ -1,0 +1,314 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Dashboard {% endblock %} 
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}
+<style>
+    .clientes-tab {
+        --bs-table-bg: transparent;
+    }  
+    tr.unread * {
+        padding: 2px;
+    }
+    .hide {
+        display: none;
+    }
+    #pagination-container {
+        display: flex;
+        justify-content: center;
+    }
+    .paginationjs .paginationjs-pages li.disabled {
+        background-color: white !important; /* branco com 100% de opacidade */
+    }
+    .status-select {
+        height: 30px !important;
+        width: 70px !important;
+        padding-left: 10px !important;
+    }
+    .inversor-select {
+        height: 30px !important;
+        width: 100px !important;
+        padding-left: 10px !important;
+    }
+    .nome-input {
+        height: 30px !important;
+        width: 200px !important;
+        padding-left: 10px !important;
+    }
+    .clientes-header {
+        padding-top: 5px !important;
+    }
+    .clientes-title {
+        padding-top: 15px !important;
+    }
+    .clientes-title::after {
+        margin-top: 15px !important;
+    }
+      
+</style>
+<link rel="stylesheet" href="https://pagination.js.org/dist/2.6.0/pagination.css">
+{% endblock stylesheets %}
+
+{% block content %}
+    <!-- [ Main Content ] start -->
+    <div class="pcoded-main-container">
+        <div class="pcoded-wrapper">
+            <div class="pcoded-content">
+                <div class="pcoded-inner-content">
+                    <div class="main-body">
+                        <div class="page-wrapper">
+                            {% if clientes %}
+                                <div class="row align-items-stretch">
+                                    <div class="col-xl-5 col-md-6 d-flex">
+                                        <!--[ Geral stats ] start-->
+                                        <div class="card text-white d-flex flex-column w-100">
+                                            <div class="card-header">
+                                              <h5>Energia gerada</h5>
+                                            </div>
+                                            <h4>
+                                                <div class="card-body d-flex flex-column align-items-center justify-content-between w-100">
+                                                    <i class="feather icon-zap" style="font-size: 40px;"></i>
+                                                    <span class="mb-1" style="font-size: 15px;">Hoje</span>
+                                                    <div class="d-flex align-items-baseline mb-4">
+                                                        <h5 class="card-title hide" style="font-size: 50px;">{{ all_energy_today }}</h5>
+                                                        <span class="h6 ml-2">kWh</span>
+                                                    </div>
+                                                    
+                                                    <i class="feather icon-zap" style="font-size: 40px;"></i>
+                                                    <span class="mb-1" style="font-size: 15px;">Total</span>
+                                                    <div class="d-flex align-items-baseline">
+                                                        <h5 class="card-title hide" style="font-size: 50px;">{{ all_energy_total }}</h5>
+                                                        <span class="h6 ml-2">mWh</span>
+                                                    </div>
+                                                </div>    
+                                            </h4>                                           
+                                        </div>                                          
+                                        <!--[ Geral stats ] end-->
+                                    </div>
+                                
+                                    <div class="col-xl-7 col-md-6 d-flex">
+                                        <!--[ Mapa ] start-->
+                                        <div class="card Mapa d-flex flex-column w-100">
+                                            <div class="card-header">
+                                                <h5>Plantas</h5>
+                                            </div>
+                                            <div class="card-block d-flex flex-grow-1 justify-content-center align-items-center w-100">
+                                                {{ mapa|safe }} 
+                                            </div>
+                                        </div>
+                                        <!--[ Mapa ] end-->
+                                    </div>
+                                </div>
+
+                                <!--[ Recent Users ] start-->
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="card Recent-Users">
+                                            <div class="card-header d-flex justify-content-between pb-0 clientes-header">
+                                                <h5 class="clientes-title">Clientes</h5>
+                                                <div class="d-flex">
+                                                    <div class="form-check form-switch d-flex flex-column align-items-center" style="margin-right: 1rem;">
+                                                        <label class="form-check-label" for="concessionariaSwitch">Apenas cadastros completos</label>
+                                                        <input class="form-check-input" style="margin-left: 0px;"type="checkbox" role="switch" id="concessionariaSwitch">
+                                                    </div>
+                                                    <div class="d-flex flex-column align-items-start mr-2">
+                                                        <label for="nome-input" style="font-size: 14px;">Nome:</label>
+                                                        <input type="text" id="nome-input" class="form-control form-control-sm p-0 nome-input">
+                                                    </div>
+                                                    <div class="d-flex flex-column align-items-start mr-2">
+                                                        <label for="inversor-select" style="font-size: 14px;">Inversor:</label>
+                                                        <select id="inversor-select" class="form-control form-control-sm p-0 inversor-select">
+                                                            <option value="">Todos</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="d-flex flex-column align-items-start">
+                                                        <label for="status-select" style="font-size: 14px;">Status:</label>
+                                                        <select id="status-select" class="form-control form-control-sm p-0 status-select">
+                                                            <option value="">Todos</option>
+                                                            <option value="Online">Online</option>
+                                                            <option value="Offline">Offline</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>                                                                                                                                                                             
+                                            <div class="card-block px-0 py-3">
+                                                <div id="data-container" class="table-responsive"></div>
+                                                <div id="pagination-container"></div>
+                                            </div>
+                                        </div>
+                                        <!--[ Recent Users ] end-->
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+<script>
+    $('.card-title').each(function () {
+        var $this = $(this);
+        var num = $this.text().replace('.', '').replace(',', '.');
+        $this.show(); // Mostra o elemento
+        $({ Counter: 0 }).animate({ Counter: parseFloat(num) }, {
+          duration: 3500,
+          easing: 'swing',
+          step: function (now) {
+            $this.text(Math.ceil(now).toLocaleString('pt-BR'));
+          }
+        });
+      });            
+</script>
+<script src="https://pagination.js.org/dist/2.6.0/pagination.min.js"></script>
+<script type="text/javascript">
+    var clientes = {{ clientes|safe }};
+    var ASSETS_ROOT = "{{ ASSETS_ROOT }}";
+    var width = "{{ width }}";
+    var csrf_token = '{% csrf_token %}';
+</script>
+<script>
+    $(function () {
+    
+        // Crie uma lista única de nomes de inversores
+        var inversores = [...new Set(clientes.map(cliente => cliente.fields.inverter.name))];
+    
+        // Adicione uma opção para cada inversor ao select
+        $.each(inversores, function(index, inversor) {
+            $('#inversor-select').append(new Option(inversor, inversor));
+        });
+
+        // Função para remover acentos e converter para minúsculo
+        function normalizar(str) {
+            return str.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase();
+        }
+    
+        // Função para filtrar os dados e atualizar a paginação
+        function filtrarDados() {
+            var nome = normalizar($('#nome-input').val());
+            var status = $('#status-select').val();
+            var inversor = $('#inversor-select').val();
+            var temCredencial = $('#concessionariaSwitch').is(':checked');
+
+            var dadosFiltrados = clientes.filter(function (cliente) {
+                return (nome ? normalizar(cliente.fields.plant_name).includes(nome) : true)
+                    && (status ? (cliente.fields.energy_today != 0 ? 'Online' : 'Offline') === status : true)
+                    && (inversor ? cliente.fields.inverter.name.includes(inversor) : true)
+                    && (!temCredencial || cliente.fields.tem_credencial);
+            });
+
+            // Destrua a instância de paginação existente
+            $('#pagination-container').pagination('destroy');
+
+            // Recrie a instância de paginação com os novos dados filtrados
+            $('#pagination-container').pagination({
+                dataSource: dadosFiltrados,
+                pageSize: 5,
+                showSizeChanger: true,
+                className: 'paginationjs-theme-gray paginationjs-big',
+                callback: function(data, pagination) {
+                    var html = template(data);
+                    $('#data-container').html(html);
+                }
+            });
+            alteraTexto();
+        }
+    
+        // Adicione os listeners de eventos
+        $('#nome-input').on('input', filtrarDados);
+        $('#status-select').on('change', filtrarDados);
+        $('#inversor-select').on('change', filtrarDados);
+        $('#concessionariaSwitch').on('change', filtrarDados);
+    
+        // Inicialize o PaginationJS
+        $('#pagination-container').pagination({
+            dataSource: clientes,
+            pageSize: 5,
+            showSizeChanger: true,
+            className: 'paginationjs-theme-gray paginationjs-big',
+            callback: function(data, pagination) {
+                var html = template(data);
+                $('#data-container').html(html);
+            }
+        });
+    });
+
+    function alteraTexto(){
+        $('.paginationjs-size-changer select option').each(function() {
+            var $this = $(this);
+            //log('Texto original:', $this.text());
+        
+            var text = $this.text().replace(/page/i, 'Página');
+            $this.text(text);
+        
+            //log('Texto modificado:', $this.text());
+        });
+    }
+
+    $(document).ready(function() {
+        // Altera o texto "Page" para "Página" após a inicialização do componente de paginação
+        alteraTexto();
+    });
+    
+    function template(data) {
+        var html = '<table class="table table-hover clientes-tab"><tbody>';
+        log(data);
+        $.each(data, function(index, item){
+            
+            log(item);
+            html += '<tr class="unread"><td>';
+            if (item.fields.inverter.name == 'growatt') {
+                html += '<img class="rounded-circle" style="width:' + width + 'px;" src="' + ASSETS_ROOT + '/images/powerplant/growatt.png" alt="activity-user">';
+            } else if (item.fields.inverter.name == 'refusol') {
+                html += '<img class="rounded-circle" style="width:' + width + 'px;" src="' + ASSETS_ROOT + '/images/powerplant/refusol.png" alt="activity-user">';
+            } else if (item.fields.inverter.name == 'abb_fimer') {
+                html += '<img class="rounded-circle" style="width:' + width + 'px;" src="' + ASSETS_ROOT + '/images/powerplant/abb_fimer.png" alt="activity-user">';
+            } else if (item.fields.inverter.name == 'fronius') {
+                html += '<img class="rounded-circle" style="width:' + width + 'px;" src="' + ASSETS_ROOT + '/images/powerplant/fronius.png" alt="activity-user">';
+            } else if (item.fields.inverter.name == 'sungrow') {
+                html += '<img class="rounded-circle" style="width:' + width + 'px;" src="' + ASSETS_ROOT + '/images/powerplant/sungrow.png" alt="activity-user">';
+            } else if (item.fields.inverter.name == 'canadian') {
+                html += '<img class="rounded-circle" style="width:' + width + 'px;" src="' + ASSETS_ROOT + '/images/powerplant/canadian.png" alt="activity-user">';
+            } else if (item.fields.inverter.name == 'deye') {
+                html += '<img class="rounded-circle" style="width:' + width + 'px;" src="' + ASSETS_ROOT + '/images/powerplant/deye.png" alt="activity-user">';
+            } else if (item.fields.inverter.name == 'ecosolys'){
+                html += '<img class="rounded-circle" style="width:' + width + 'px;" src="' + ASSETS_ROOT + '/images/powerplant/ecosolys.png" alt="activity-user">';
+            } else if (item.fields.inverter.name =='solis') {
+                html += '<img class="rounded-circle" style="width:' + width + 'px;" src="' + ASSETS_ROOT + '/images/powerplant/solis.png" alt="activity-user">';
+            }
+            html += '</td>';
+            html += '<td><h6 class="mb-1">' + item.fields.plant_name + '</h6></td>';
+            html += '<td><h6 class="text-muted">';
+            if (item.fields.energy_today != 0) {
+                html += '<i class="fas fa-circle text-c-green f-10 m-r-15"></i>Online';
+            } else {
+                html += '<i class="fas fa-circle text-c-red f-10 m-r-15"></i>Offline';
+            }
+            html += '</h6></td>';
+            html += '<td><h6 class="text-muted">';
+            html += '<p class="m-0">Geração hoje: ' + item.fields.energy_today + ' kWh</p>';
+            html += '<p class="m-0">Geração total: ' + item.fields.energy_total + ' kWh</p>';
+            html += '</h6></td>';
+            html += '<td>';
+            html += '<form action="home/overview" method="post">';
+            html += csrf_token;
+            html += '<input type="hidden" name="dashboard-cliente-id" value="' + item.pk + '">';
+            html += '<button type="submit" class="label theme-bg2 text-white f-12">Acessar</button>';
+            html += '</form>';
+            html += '<form action="clientes/profile_user" method="get">';
+            html += csrf_token;
+            html += '<input type="hidden" name="cliente" value="' + item.pk + '">';
+            html += '<button type="submit" class="label theme-bg text-white f-12">Editar</button>';
+            html += '</form>';
+            html += '</td></tr>';
+        });
+        html += '</tbody></table>';
+        return html;
+    }
+</script>
+{% endblock javascripts %}
