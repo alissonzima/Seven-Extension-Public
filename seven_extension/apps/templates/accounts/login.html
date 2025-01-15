@@ -1,0 +1,224 @@
+{% extends "layouts/base-fullscreen.html" %}
+
+{% block title %} Login {% endblock %}
+
+{% block content %}   
+<style>
+    .nav-tabs .nav-link:not(.active) {
+        background-color: transparent; /* remove o fundo da guia não ativa */
+    }
+    body:not(.dark) .nav-tabs .nav-link:not(.active) {
+        background-color: lightgray; /* cor de fundo para a guia não ativa quando o body não tem a classe dark */
+    }
+    
+    body.dark .nav-tabs .nav-link:not(.active) {
+        background-color: black; /* cor de fundo para a guia não ativa quando o body tem a classe dark */
+    }
+
+    .card-body.text-center {
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .card-body::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 0;
+        
+    } 
+    @media (min-width: 451px) {
+        .card-body::before {
+            background-size: 50% 60% !important; /* Tente usar !important para forçar a aplicação */
+        }
+    }
+    
+    @media (max-width: 450px) {
+        .card-body::before {
+            background-size: 100% 70% !important; /* Tente usar !important para forçar a aplicação */
+        }
+    }
+
+    /* Consulta de mídia para monitores ultra wide */
+    @media screen and (min-width: 1200px) {
+        .card-body::before {
+            background-size: 700px 700px !important; /* Substitua pelos valores desejados em pixels */
+        }
+    }
+
+    #integrador .card-body::before {
+        background: url("{{ ASSETS_ROOT }}/images/powerplant/fundo-integrador.jpg") no-repeat center center fixed;
+    }
+
+    #cliente .card-body::before {
+        background: url("{{ ASSETS_ROOT }}/images/powerplant/fundo-cliente.jpg") no-repeat center center fixed;
+    }
+
+    body.dark .card-body::before {  
+        opacity: 0.08;
+    }
+    body:not(.dark) .card-body::before {  
+        opacity: 0.25;
+    }
+    
+    .card-body .content {
+        position: relative;
+        z-index: 1;
+    }
+    
+    
+    
+    
+</style>
+
+<script>
+    function onSubmitIntegrador(token) {
+        document.getElementById("login-integrador").submit();
+    }
+    
+    function onSubmitCliente(token) {
+        document.getElementById("login-cliente").submit();
+    }
+</script>
+
+<div class="auth-wrapper">
+    <div class="auth-content">
+        
+        <div class="auth-bg">
+            <span class="r"></span>
+            <span class="r s"></span>
+            <span class="r s"></span>
+            <span class="r"></span>
+        </div>
+        <div class="card">
+            <!-- Adicionando a navbar -->
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                <li class="nav-item w-50 text-center">
+                    <a class="nav-link active" id="integrador-tab" data-toggle="tab" href="#integrador" role="tab" aria-controls="integrador" aria-selected="true">INTEGRADOR</a>
+                </li>
+                <li class="nav-item w-50 text-center">
+                    <a class="nav-link" id="cliente-tab" data-toggle="tab" href="#cliente" role="tab" aria-controls="cliente" aria-selected="false">CLIENTE</a>
+                </li>
+            </ul>
+            <!-- Fim da navbar -->
+            
+            <!-- Conteúdo das tabs -->
+            <div class="tab-content" id="myTabContent">
+                <!-- Conteúdo da tab INTEGRADOR -->
+                <div class="tab-pane fade show active" id="integrador" role="tabpanel" aria-labelledby="integrador-tab">
+                    <!-- Seu código de login aqui -->
+                    <div class="card-body text-center">
+                        <div class="content">
+                            <div class="mb-4">
+                                <i class="feather icon-unlock auth-icon"></i>
+                            </div>
+                            <h3 class="mb-4">Login</h3>
+
+                            <p class="text-muted mb-4">
+                                {% if msg %}
+                                    <span class="text-danger">{{ msg | safe }}</span>
+                                {% else %}
+                                    Insira suas credenciais de Integrador
+                                {% endif %} 
+                            </p>
+
+                            <form id="login-integrador" role="form" method="post" action="">
+                                <input type="hidden" name="form-login" value="integrador">
+
+                                {% csrf_token %}                   
+
+                                <div class="input-group mb-3">
+                                    {{ form.username }}
+                                </div>
+
+                                <div class="input-group mb-4">
+                                    {{ form.password }}
+                                </div>
+
+                                <div class="form-group text-left mb-4">
+                                    <div class="checkbox checkbox-fill d-inline">
+                                        <input type="checkbox" name="checkbox-fill-1" id="checkbox-fill-a1" checked="">
+                                        <label for="checkbox-fill-a1" class="cr"> Salvar Credenciais</label>
+                                    </div>
+                                </div>
+                                <button class="g-recaptcha btn btn-primary shadow-2 mb-4" 
+                                    data-sitekey="{{ recaptcha_site_key }}" 
+                                    data-callback='onSubmitIntegrador' 
+                                    data-action='submit'
+                                    name="login"
+                                    type="submit" >Login</button>
+                            </form>
+
+                            <!-- <p class="mb-0 text-muted">Não tem uma conta? <a href="{% url 'register' %}" >Cadastre-se</a></p> -->
+                            <br />
+                            <p class="mb-2 text-muted">
+                                © <a target="_blank" href="put_href">put_href</a>   
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Conteúdo da tab CLIENTE -->
+                <!-- Você pode copiar e colar o código de login aqui quando estiver pronto para modificá-lo -->
+                <div class="tab-pane fade" id="cliente" role="tabpanel" aria-labelledby="cliente-tab">
+                    <!-- Seu código de login aqui -->
+                    <div class="card-body text-center">
+                        <div class="content">
+                            <div class="mb-4">
+                                <i class="feather icon-unlock auth-icon"></i>
+                            </div>
+                            <h3 class="mb-4">Login</h3>
+
+                            <p class="text-muted mb-4">
+                                {% if msg %}
+                                    <span class="text-danger">{{ msg | safe }}</span>
+                                {% else %}
+                                    Insira suas credenciais
+                                {% endif %} 
+                            </p>
+
+                            <form  id="login-cliente"role="form" method="post" action="">
+                                <input type="hidden" name="form-login" value="cliente">
+                                {% csrf_token %}                   
+
+                                <div class="input-group mb-3">
+                                    {{ form.username }}
+                                </div>
+
+                                <div class="input-group mb-4">
+                                    {{ form.password }}
+                                </div>
+
+                                <div class="form-group text-left mb-4">
+                                    <div class="checkbox checkbox-fill d-inline">
+                                        <input type="checkbox" name="checkbox-fill-1" id="checkbox-fill-a1" checked="">
+                                        <label for="checkbox-fill-a1" class="cr"> Salvar Credenciais</label>
+                                    </div>
+                                </div>
+                                <button class="g-recaptcha btn btn-primary shadow-2 mb-4" 
+                                    data-sitekey="{{ recaptcha_site_key }}" 
+                                    data-callback='onSubmitCliente' 
+                                    data-action='submit'
+                                    name="login"
+                                    type="submit" >Login</button>
+                            </form>
+
+                            <!-- <p class="mb-0 text-muted">Não tem uma conta? <a href="{% url 'register' %}" >Cadastre-se</a></p> -->
+                            <br />
+                            <p class="mb-2 text-muted">
+                                © <a target="_blank" href="put_href">put_href</a>   
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Fim do conteúdo das tabs -->
+        </div>         
+    </div>
+</div>
+
+
+{% endblock content %}
