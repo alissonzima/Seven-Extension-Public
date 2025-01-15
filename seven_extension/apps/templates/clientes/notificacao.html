@@ -1,0 +1,151 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Criar Notificações {% endblock %} 
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}
+{% endblock stylesheets %}
+
+{% block content %}
+    <div class="pcoded-main-container">
+        <div class="pcoded-wrapper">
+            <div class="pcoded-content">
+                <div class="pcoded-inner-content">
+                    <div class="main-body">
+                        <div class="page-wrapper">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    {% if messages %}
+                                        <ul class="messages">
+                                            {% for message in messages %}
+                                                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5>Ativar Notificação</h5>
+                                </div>
+                                <div class="card-block">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <form id="formNotificacao" action="{% url 'notificacao' %}" method="post">
+                                            {% csrf_token %}
+                                            <div class="row mb-4">
+                                                <div class="form-group col">
+                                                    <label for="seletor">Tipo de notificação:</label>
+                                                    <select id="seletor" class='form-control' name='seletor'>
+                                                        <option value="todos">TODOS</option>
+                                                        <option value="integradores">INTEGRADORES</option>
+                                                        <option value="integradorX">INTEGRADOR X</option>
+                                                        <option value="clienteX">CLIENTE X</option>
+                                                        <option value="clientesIntegradorX">CLIENTES DO INTEGRADOR X</option>
+                                                        <option value="clientesInversorX">CLIENTES COM INVERSOR X</option>
+                                                    </select>
+                                                </div>
+                                                <div class="form-group col">
+                                                    <!-- Campo estilo_notificacao -->
+                                                    <label for="estilo_notificacao">Estilo da notificação:</label>
+                                                    <select id="estilo_notificacao" class='form-control' name="estilo_notificacao">
+                                                        {% for value, display in estilo_notificacao_choices %}
+                                                        <option value="{{ value }}">{{ display }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                                <div class="form-group col">
+                                                    <!-- Campo local_notificacao -->
+                                                    <label for="local_notificacao">Local da notificação:</label>
+                                                    <select id="local_notificacao" class='form-control' name="local_notificacao">
+                                                        {% for value, display in local_notificacao_choices %}
+                                                        <option value="{{ value }}">{{ display }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                                <div class="form-group col">
+                                                    <!-- Campo final_notificacao -->
+                                                    <label for="final_notificacao">Data final de exibição:</label>
+                                                    <input type="datetime-local" id="final_notificacao" class='form-control' name="final_notificacao">
+                                                </div>
+                                            </div>
+
+                                            <div class="row mb-4">
+                                                <div class="form-group col">
+                                                    <label for="mensagem">Mensagem:</label>
+                                                    <input id="mensagem" class='form-control' name="mensagem"></input>
+                                                </div>
+                                            </div>                                            
+
+                                            <div class="row" id="div_empresa" style="visibility: hidden; height: 0;">
+                                                <div class="form-group col">
+                                                    <label for="empresa">Integrador:</label>
+                                                    <select id="empresa" class='form-control' name="empresa">
+                                                        {% for empresa in empresas %}
+                                                        <option value="{{ empresa.id }}">{{ empresa.nome }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="row" id="div_cliente" style="visibility: hidden; height: 0;">
+                                                <div class="form-group col">
+                                                    <label for="cliente">Cliente:</label>
+                                                    <select id="cliente" class='form-control' name="cliente">
+                                                        {% for cliente in clientes %}
+                                                        <option value="{{ cliente.id }}">{{ cliente.plant_name }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="row" id="div_inversor" style="visibility: hidden; height: 0;">
+                                                <div class="form-group col">
+                                                    <label for="inversor">Inversor:</label>
+                                                    <select id="inversor" class='form-control' name="inversor">
+                                                        {% for inversor in inversores %}
+                                                        <option value="{{ inversor.id }}">{{ inversor.name }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <input type="submit" value="Enviar Notificação" class='btn btn-secondary'>
+                                            
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+<script>
+    $(document).ready(function() {
+        $('#seletor').change(function() {
+            var selection = $(this).val();
+    
+            // Ocultar todas as divs
+            $('#div_empresa').css({visibility: 'hidden', height: 0}).removeClass('mb-4');
+            $('#div_cliente').css({visibility: 'hidden', height: 0}).removeClass('mb-4');
+            $('#div_inversor').css({visibility: 'hidden', height: 0}).removeClass('mb-4');
+    
+            // Mostrar as divs com base na seleção
+            if (selection === 'integradorX' || selection === 'clientesIntegradorX') {
+                $('#div_empresa').css({visibility: 'visible', height: 'auto'}).addClass('mb-4');
+            } else if (selection === 'clienteX') {
+                $('#div_cliente').css({visibility: 'visible', height: 'auto'}).addClass('mb-4');
+            } else if (selection === 'clientesInversorX') {
+                $('#div_inversor').css({visibility: 'visible', height: 'auto'}).addClass('mb-4');
+            }
+        });
+    });
+</script>
+{% endblock javascripts %}
