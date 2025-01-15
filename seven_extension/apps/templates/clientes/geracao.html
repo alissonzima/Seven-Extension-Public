@@ -1,0 +1,17 @@
+{% extends "layouts/base-fullscreen.html" %}
+{% block stylesheets %}
+
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+
+    {% load plotly_dash %}
+
+{% endblock %}
+
+{% block title %} Geração de Clientes {% endblock %}
+
+{% block content %}
+
+    {% plotly_app name="geracao_clientes" %}
+
+{% endblock %}
