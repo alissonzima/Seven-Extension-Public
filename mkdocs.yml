@@ -1,0 +1,35 @@
+site_name: Seven View
+theme: material
+plugins:
+  - mkdocstrings
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.highlight
+  - pymdownx.superfences
+  - tables
+nav:
+  - Início: index.md
+  - apps: 
+    #- Authentication:
+    - clientes:
+      - admin.py: seven_extension/apps/clientes/admin.md
+      - app_geracao_clientes.py: seven_extension/apps/clientes/app_geracao_clientes.md
+      - apps.py: seven_extension/apps/clientes/apps.md
+      - forms.py: seven_extension/apps/clientes/forms.md
+      - methods.py: seven_extension/apps/clientes/methods.md
+      - models.py: seven_extension/apps/clientes/models.md
+      - views.py: seven_extension/apps/clientes/views.md
+      - jobs:
+        - get_concessionaria_data.py: seven_extension/apps/clientes/jobs/get_concessionaria_data.md
+        - get_inversor_energy.py: seven_extension/apps/clientes/jobs/get_inversor_energy.md
+      - management:
+        - commands:
+          - runscheduler.py: seven_extension/apps/clientes/management/commands/runscheduler.md
+    - home:
+      - views.py: seven_extension/apps/home/views.md
+  - core:
+    - custom_exceptions.py: seven_extension/core/custom_exceptions.md
+    - settings.py: seven_extension/core/settings.md
+    - user_backend.py: seven_extension/core/user_backend.md
+    - user_middleware.py: seven_extension/core/user_middleware.md
