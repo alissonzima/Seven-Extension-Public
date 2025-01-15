@@ -1,0 +1,87 @@
+{% extends "layouts/base-fullscreen.html" %}
+
+{% block title %} Cadastro {% endblock %}
+
+{% block content %}   
+
+    <div class="auth-wrapper">
+        <div class="auth-content">
+            <div class="auth-bg">
+                <span class="r"></span>
+                <span class="r s"></span>
+                <span class="r s"></span>
+                <span class="r"></span>
+            </div>
+            <div class="card">
+                <div class="card-body text-center">
+                    <div class="mb-4">
+                        <i class="feather icon-user-plus auth-icon"></i>
+                    </div>
+                    <h3 class="mb-4">Cadastrar</h3>
+
+                    <span class="mb-0 text-muted">
+                        {% if msg %}
+                            <span class="text-danger">{{ msg | safe }}</span>
+                        {% else %}
+                            Insira suas credenciais
+                        {% endif %} 
+                    </span>
+
+                    <br />
+                    <br />
+
+                    <!-- Hide the form on success -->
+                    {% if success %}
+
+                        <a href="{% url 'login' %}" class="btn btn-primary shadow-2 mb-4">Login</a>
+
+                    {% else %}
+
+                        <form role="form" method="post" action="">
+
+                            {% csrf_token %}                    
+
+                            <div class="input-group mb-3">
+                                {{ form.username }}
+                            </div>
+                            <span class="text-error">{{ form.username.errors }}</span>
+
+                            <div class="input-group mb-3">
+                                {{ form.email }}
+                            </div>
+                            <span class="text-error">{{ form.email.errors }}</span>
+
+                            <div class="input-group mb-4">
+                                {{ form.password1 }}
+                            </div>
+                            <span class="text-error">{{ form.password1.errors }}</span>
+
+                            <div class="input-group mb-4">
+                                {{ form.password2 }}
+                            </div>
+                            <span class="text-error">{{ form.password2.errors }}</span>
+                            
+                            <div class="form-group text-left">
+                                <div class="checkbox checkbox-fill d-inline">
+                                    <input type="checkbox" name="checkbox-fill-1" id="checkbox-fill-a1" checked="">
+                                    <label for="checkbox-fill-a1" class="cr"> Aceitar os <a href="#">termos</a></label>
+                                </div>
+                            </div>
+                            <button type="submit" name="register" class="btn btn-primary shadow-2 mb-4">Registrar</button>
+
+                        </form>
+
+                        <p class="mb-0 text-muted">Já tem uma conta? <a href="{% url 'login' %}" >Login</a></p>
+                    
+                    {% endif %}
+                    
+                    <br />
+                    <p class="mb-2 text-muted">
+                        © <a target="_blank" href="put_href">put_href</a>   
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
