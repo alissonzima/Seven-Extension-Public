@@ -1,0 +1,592 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Visão Geral {% endblock %} 
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}
+
+    {% load plotly_dash %}
+    {% plotly_header %}
+
+    <style>
+        .progress-container {
+          display: flex;
+          align-items: center;
+        }
+        .progress-label {
+          margin-left: 1em;
+          align-items: center;
+          display: flex;
+          justify-content: center;
+          margin-bottom: -2px;
+        }
+        .progress-label-month {
+            margin-right: 1em;
+            align-items: center;
+            display: flex;
+            justify-content: center;
+            margin-bottom: -2px;
+        }
+        .progress.m-t-5 {
+            height: 12px;
+            width: 60%;
+        }
+        @media (max-width: 450px) {
+            .progress.m-t-5 {
+                height: 12px;
+                width: 35%;
+            } 
+            #faturado .progress.m-t-5 {
+                height: 12px;
+                width: 10% !important;
+            } 
+        }
+        .valor {
+            width: 70x;
+            justify-content: start;
+        }
+        .energia {
+            width: 70px;
+            justify-content: end;
+        }
+        .conta-dropdown{
+            background-color: #4e5d6c;
+        }
+        #myTab .dropdown-menu a:hover {
+            --bs-dropdown-link-hover-color: white;
+        }
+        body:not(.dark) #myTab .dropdown-menu {
+            background-color: white;
+        }
+        body:not(.dark) #myTab .dropdown-menu a:hover {
+            --bs-dropdown-link-hover-color: black;
+        }
+
+        /* Estilização para cada tipo de fundo */
+        body:not(.dark) .bg-danger {
+            background-color: #f77985 !important; /* Vermelho suave */
+        }
+
+        body:not(.dark) .bg-warning {
+            background-color: #fad86e !important; /* Amarelo suave */
+        }
+
+        body:not(.dark) .bg-success {
+            background-color: #74fc95 !important; /* Verde suave */
+        }
+
+        body:not(.dark) .bg-primary {
+            background-color: #4890fa !important; /* Azul suave */
+        }
+
+        body:not(.dark) .bg-info {
+            background-color: #80dbed !important; /* Ciano suave */
+        }
+
+        body:not(.dark) .list-group-item i {
+            color: #000000 !important; /* Cor dos ícones para o tema claro */
+        }
+
+        body:not(.dark) .list-group-item {
+            color: #000000 !important; /* Cor do texto para o tema claro */
+        }
+
+        body:not(.dark) .progress-label {
+            color: #000000 !important; /* Cor do texto para o tema claro */
+        }
+        .mr-2 {
+            margin-right: 0.5rem !important;
+        }
+        @media (max-width: 450px) .green-bar {
+            background-color: #74fc95 !important; /* Verde suave */
+        }
+        @media (max-width: 450px) {
+            .green-bar {
+                background-color: #74fc95 !important; /* Verde suave */
+            }
+        }
+        @media (max-width: 450px) {
+            .green-bar > .progress-label {
+                color: #000000; /* Preto */
+            }
+        }
+
+    </style>
+
+{% endblock %}
+
+{% block content %}
+
+    <!-- [ Main Content ] start -->
+    <div class="pcoded-main-container">
+        <div class="pcoded-wrapper">
+
+            <div class="pcoded-content">
+                <div class="pcoded-inner-content">
+                    <!-- [ breadcrumb ] start -->
+
+                    <!-- [ breadcrumb ] end -->
+                    <div class="main-body">
+                        <div class="page-wrapper">
+                            <!-- [ Main Content ] start -->
+                            <div class="row">
+                                <!-- [ Meu app Plotly ]-->
+                                <div class="col-xl-12">
+                                    <div class="card daily-sales" id="generation-graph-container">
+                                        <div class="card-block">
+                                            <h6 class="mb-4">Geração de Energia por Cliente</h6>
+                                            <div class="row d-flex align-items-center">
+                                                <div class="col-12 chart-container" style="min-height: 480px;" id="geracao-cliente-container">
+                                                    {% with id='geracao_clientes' %}
+                                                        {% plotly_direct name=id %}
+                                                    {% endwith %} 
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- [ Final do meu app Plotly ]-->
+                                <!-- [ Início das tabs de análise ]-->
+                                <div class="col-sm-12 m-b-30">
+                                    <h5 name="analise_conta_tab">Análise da conta de energia</h5>
+                                    <hr>
+                                    <ul class="nav nav-tabs" id="myTab" role="tablist">
+                                        <li class="nav-item dropdown" id="consumo-dropdown" style="display: none;">
+                                            <a class="nav-link dropdown-toggle text-uppercase" href="#" id="consumoDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                Consumo
+                                            </a>
+                                            <ul class="dropdown-menu conta-dropdown" style="margin-top: 10px;" aria-labelledby="consumoDropdown">
+                                            </ul>
+                                        </li>
+                                        <li class="nav-item dropdown" id="injecao-dropdown" style="display: none;">
+                                            <a class="nav-link dropdown-toggle text-uppercase" href="#" id="injecaoDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                Injeção
+                                            </a>
+                                            <ul class="dropdown-menu conta-dropdown" style="margin-top: 10px;" aria-labelledby="injecaoDropdown">
+                                            </ul>
+                                        </li>
+                                        <li class="nav-item dropdown" id="faturado-dropdown" style="display: none;">
+                                            <a class="nav-link dropdown-toggle text-uppercase" href="#" id="faturadoDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                Faturado
+                                            </a>
+                                            <ul class="dropdown-menu conta-dropdown" style="margin-top: 10px;" aria-labelledby="faturadoDropdown">
+                                            </ul>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link active text-uppercase" id="consumo-tab" data-toggle="tab" href="#consumo" role="tab" aria-controls="consumo" aria-selected="true">Consumo</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link text-uppercase" id="injecao-tab" data-toggle="tab" href="#injecao" role="tab" aria-controls="injecao" aria-selected="false">Injeção</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link text-uppercase" id="faturado-tab" data-toggle="tab" href="#faturado" role="tab" aria-controls="faturado" aria-selected="false">Faturado</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link text-uppercase" id="analise-tab" data-toggle="tab" href="#analise" role="tab" aria-controls="analise" aria-selected="false">Análise</a>
+                                        </li>
+                                    </ul>
+                                    <!-- [ Início do conteúdo tabs de análise ]-->
+                                    <div class="tab-content" id="myTabContent">
+                                        
+                                        <div class="tab-pane fade show active" id="consumo" role="tabpanel" aria-labelledby="home-tab">
+
+                                        </div>  
+                                        <!-- Aba 2 INJECAO -->
+                                        <div class="tab-pane fade" id="injecao" role="tabpanel" aria-labelledby="profile-tab">
+                                            <h5 class="mb-4">Injeção anual em kWh:</h5>
+                                            <span id="injecao-texto-dinamico"></span>
+                                            <div class="progress-container">
+                                                <p class="progress-label-month">06/2023</p>
+                                                <div class="progress m-t-5">
+                                                    <div class="progress-bar progress-bar-striped" role="progressbar"
+                                                        style="width: 88%;" aria-valuenow="88" aria-valuemin="0"
+                                                        aria-valuemax="100" name='14_bar'>
+                                                    </div>
+                                                </div>
+                                                <p class="progress-label">511 kWh</p>
+                                            </div>
+                                            
+                                            <div class="progress-container">
+                                                <p class="progress-label-month">05/2023</p>
+                                                <div class="progress m-t-5">
+                                                    <div class="progress-bar progress-bar-striped" role="progressbar"
+                                                        style="width: 87%;" aria-valuenow="87" aria-valuemin="0"
+                                                        aria-valuemax="100" name='15_bar'>
+                                                    </div>
+                                                </div>
+                                                <p class="progress-label">503 kWh</p>
+                                            </div>
+                                            
+                                            <div class="progress-container">
+                                                <p class="progress-label-month">04/2023</p>
+                                                <div class="progress m-t-5">
+                                                    <div class="progress-bar progress-bar-striped" role="progressbar"
+                                                        style="width: 86%;" aria-valuenow="86" aria-valuemin="0"
+                                                        aria-valuemax="100" name='16_bar'>
+                                                    </div>
+                                                </div>
+                                                <p class="progress-label">500 kWh</p>
+                                            </div>
+                                            
+                                            <div class="progress-container">
+                                                <p class="progress-label-month">03/2023</p>
+                                                <div class="progress m-t-5">
+                                                    <div class="progress-bar progress-bar-striped" role="progressbar"
+                                                        style="width: 86%;" aria-valuenow="86" aria-valuemin="0"
+                                                        aria-valuemax="100" name='17_bar'>
+                                                    </div>
+                                                </div>
+                                                <p class="progress-label">501 kWh</p>
+                                            </div>
+                                            
+                                            <div class="progress-container">
+                                                <p class="progress-label-month">02/2023</p>
+                                                <div class="progress m-t-5">
+                                                    <div class="progress-bar progress-bar-striped" role="progressbar"
+                                                        style="width: 86%;" aria-valuenow="86" aria-valuemin="0"
+                                                        aria-valuemax="100" name='18_bar'>
+                                                    </div>
+                                                </div>
+                                                <p class="progress-label">497 kWh</p>
+                                            </div>
+                                            
+                                            <div class="progress-container">
+                                                <p class="progress-label-month">01/2023</p>
+                                                <div class="progress m-t-5">
+                                                    <div class="progress-bar progress-bar-striped" role="progressbar"
+                                                        style="width: 67%;" aria-valuenow="67" aria-valuemin="0"
+                                                        aria-valuemax="100" name='19_bar'>
+                                                    </div>
+                                                </div>
+                                                <p class="progress-label">384 kWh</p>
+                                            </div>
+                                            
+                                            <div class="progress-container">
+                                                <p class="progress-label-month">12/2022</p>
+                                                <div class="progress m-t-5">
+                                                    <div class="progress-bar progress-bar-striped" role="progressbar"
+                                                        style="width: 75%;" aria-valuenow="75" aria-valuemin="0"
+                                                        aria-valuemax="100" name='20_bar'>
+                                                    </div>
+                                                </div>
+                                                <p class="progress-label">433 kWh</p>
+                                            </div>
+                                            
+                                            <div class="progress-container">
+                                                <p class="progress-label-month">11/2022</p>
+                                                <div class="progress m-t-5">
+                                                    <div class="progress-bar progress-bar-striped" role="progressbar"
+                                                        style="width: 67%;" aria-valuenow="67" aria-valuemin="0"
+                                                        aria-valuemax="100" name='21_bar'>
+                                                    </div>
+                                                </div>
+                                                <p class="progress-label">389 kWh</p>
+                                            </div>
+                                            
+                                            <div class="progress-container">
+                                                <p class="progress-label-month">10/2022</p>
+                                                <div class="progress m-t-5">
+                                                    <div class="progress-bar progress-bar-striped" role="progressbar"
+                                                        style="width: 86%;" aria-valuenow="86" aria-valuemin="0"
+                                                        aria-valuemax="100" name='22_bar'>
+                                                    </div>
+                                                </div>
+                                                <p class="progress-label">498 kWh</p>
+                                            </div>
+                                            
+                                            <div class="progress-container">
+                                                <p class="progress-label-month">09/2022</p>
+                                                <div class="progress m-t-5">
+                                                    <div class="progress-bar progress-bar-striped" role="progressbar"
+                                                        style="width: 91%;" aria-valuenow="91" aria-valuemin="0"
+                                                        aria-valuemax="100" name='23_bar'>
+                                                    </div>
+                                                </div>
+                                                <p class="progress-label">525 kWh</p>
+                                            </div>
+                                            
+                                            <div class="progress-container">
+                                                <p class="progress-label-month">08/2022</p>
+                                                <div class="progress m-t-5">
+                                                    <div class="progress-bar progress-bar-striped" role="progressbar"
+                                                        style="width: 100%;" aria-valuenow="100" aria-valuemin="0"
+                                                        aria-valuemax="100" name='24_bar'>
+                                                    </div>
+                                                </div>
+                                                <p class="progress-label">576 kWh</p>
+                                            </div>
+                                            
+                                            <div class="progress-container">
+                                                <p class="progress-label-month">07/2022</p>
+                                                <div class="progress m-t-5">
+                                                    <div class="progress-bar progress-bar-striped" role="progressbar"
+                                                        style="width: 91%;" aria-valuenow="91" aria-valuemin="0"
+                                                        aria-valuemax="100" name='25_bar'>
+                                                    </div>
+                                                </div>
+                                                <p class="progress-label">521 kWh</p>
+                                            </div>
+                                            
+                                            <div class="progress-container">
+                                                <p class="progress-label-month">06/2022</p>
+                                                <div class="progress m-t-5">
+                                                    <div class="progress-bar progress-bar-striped" role="progressbar"
+                                                        style="width: 94%;" aria-valuenow="94" aria-valuemin="0"
+                                                        aria-valuemax="100" name='26_bar'>
+                                                    </div>
+                                                </div>
+                                                <p class="progress-label">543 kWh</p>
+                                            </div>
+
+                                        </div>
+
+                                        <!-- Aba 3 FATURADO -->
+                                        <div class="tab-pane fade" id="faturado" role="tabpanel" aria-labelledby="profile-tab">
+                                            <div class="d-flex">
+                                                <h5 class="mb-4 mr-2">Energia Faturada anual:</h5>
+                                                <i class="feather icon-help-circle" title="Essa sessão mostra o valor da sua fatura em uma coluna e a energia em kWh considerada pela operadora" style="font-size: 1em;"></i>
+                                            </div>
+                                            <span id="faturado-texto-dinamico"></span>
+                                            <div class="progress-container">
+                                                <p class="progress-label-month">06/2023</p>
+                                                <div class="progress m-t-5">
+                                                    <div class="progress-bar progress-bar-striped" role="progressbar"
+                                                        style="width: 91%; background-color:Tomato !important;" aria-valuenow="91" aria-valuemin="0"
+                                                        aria-valuemax="100" name='27_bar'>
+                                                    </div>
+                                                </div>
+                                                <p class="progress-label valor">R$ 50.00</p>
+                                                <p class="progress-label energia">511 kWh</p>
+                                            </div>
+                                            
+                                            <div class="progress-container">
+                                                <p class="progress-label-month">05/2023</p>
+                                                <div class="progress m-t-5">
+                                                    <div class="progress-bar progress-bar-striped" role="progressbar"
+                                                        style="width: 91%; background-color:Tomato !important;" aria-valuenow="91" aria-valuemin="0"
+                                                        aria-valuemax="100" name='28_bar'>
+                                                    </div>
+                                                </div>
+                                                <p class="progress-label valor">R$ 40.00</p>
+                                                <p class="progress-label energia">511 kWh</p>
+                                            </div>
+                                            
+                                            <div class="progress-container">
+                                                <p class="progress-label-month">04/2023</p>
+                                                <div class="progress m-t-5">
+                                                    <div class="progress-bar progress-bar-striped" role="progressbar"
+                                                        style="width: 91%; background-color:Tomato !important;" aria-valuenow="91" aria-valuemin="0"
+                                                        aria-valuemax="100" name='29_bar'>
+                                                    </div>
+                                                </div>
+                                                <p class="progress-label valor">R$ 450.00</p>
+                                                <p class="progress-label energia">80 kWh</p>
+                                            </div>
+                                            
+                                            <div class="progress-container">
+                                                <p class="progress-label-month">03/2023</p>
+                                                <div class="progress m-t-5">
+                                                    <div class="progress-bar progress-bar-striped" role="progressbar"
+                                                        style="width: 91%; background-color:Tomato !important;" aria-valuenow="91" aria-valuemin="0"
+                                                        aria-valuemax="100" name='30_bar'>
+                                                    </div>
+                                                </div>
+                                                <p class="progress-label valor">R$ 400.00</p>
+                                                <p class="progress-label energia">59 kWh</p>
+                                            </div>
+                                            
+                                            <div class="progress-container">
+                                                <p class="progress-label-month">02/2023</p>
+                                                <div class="progress m-t-5">
+                                                    <div class="progress-bar progress-bar-striped" role="progressbar"
+                                                        style="width: 91%; background-color:Tomato !important;" aria-valuenow="91" aria-valuemin="0"
+                                                        aria-valuemax="100" name='31_bar'>
+                                                    </div>
+                                                </div>
+                                                <p class="progress-label valor">R$ 550.00</p>
+                                                <p class="progress-label energia">511 kWh</p>
+                                            </div>
+                                            
+                                            <div class="progress-container">
+                                                <p class="progress-label-month">01/2023</p>
+                                                <div class="progress m-t-5">
+                                                    <div class="progress-bar progress-bar-striped" role="progressbar"
+                                                        style="width: 91%; background-color:Tomato !important;" aria-valuenow="91" aria-valuemin="0"
+                                                        aria-valuemax="100" name='32_bar'>
+                                                    </div>
+                                                </div>
+                                                <p class="progress-label valor">R$ 450.00</p>
+                                                <p class="progress-label energia">511 kWh</p>
+                                            </div>
+                                            
+                                            <div class="progress-container">
+                                                <p class="progress-label-month">12/2022</p>
+                                                <div class="progress m-t-5">
+                                                    <div class="progress-bar progress-bar-striped" role="progressbar"
+                                                        style="width: 91%; background-color:Tomato !important;" aria-valuenow="91" aria-valuemin="0"
+                                                        aria-valuemax="100" name='33_bar'>
+                                                    </div>
+                                                </div>
+                                                <p class="progress-label valor">R$ 450.00</p>
+                                                <p class="progress-label energia">511 kWh</p>
+                                            </div>
+                                            
+                                            <div class="progress-container">
+                                                <p class="progress-label-month">11/2022</p>
+                                                <div class="progress m-t-5">
+                                                    <div class="progress-bar progress-bar-striped" role="progressbar"
+                                                        style="width: 91%; background-color:Tomato !important;" aria-valuenow="91" aria-valuemin="0"
+                                                        aria-valuemax="100" name='34_bar'>
+                                                    </div>
+                                                </div>
+                                                <p class="progress-label valor">R$ 450.00</p>
+                                                <p class="progress-label energia">511 kWh</p>
+                                            </div>
+                                            
+                                            <div class="progress-container">
+                                                <p class="progress-label-month">10/2022</p>
+                                                <div class="progress m-t-5">
+                                                    <div class="progress-bar progress-bar-striped" role="progressbar"
+                                                        style="width: 91%; background-color:Tomato !important;" aria-valuenow="91" aria-valuemin="0"
+                                                        aria-valuemax="100" name='35_bar'>
+                                                    </div>
+                                                </div>
+                                                <p class="progress-label valor">R$ 450.00</p>
+                                                <p class="progress-label energia">511 kWh</p>
+                                            </div>
+                                            
+                                            <div class="progress-container">
+                                                <p class="progress-label-month">09/2022</p>
+                                                <div class="progress m-t-5">
+                                                    <div class="progress-bar progress-bar-striped" role="progressbar"
+                                                        style="width: 91%; background-color:Tomato !important;" aria-valuenow="91" aria-valuemin="0"
+                                                        aria-valuemax="100" name='36_bar'>
+                                                    </div>
+                                                </div>
+                                                <p class="progress-label valor">R$ 450.00</p>
+                                                <p class="progress-label energia">511 kWh</p>
+                                            </div>
+                                            
+                                            <div class="progress-container">
+                                                <p class="progress-label-month">08/2022</p>
+                                                <div class="progress m-t-5">
+                                                    <div class="progress-bar progress-bar-striped" role="progressbar"
+                                                        style="width: 91%; background-color:Tomato !important;" aria-valuenow="91" aria-valuemin="0"
+                                                        aria-valuemax="100" name='37_bar'>
+                                                    </div>
+                                                </div>
+                                                <p class="progress-label valor">R$ 450.00</p>
+                                                <p class="progress-label energia">511 kWh</p>
+                                            </div>
+                                            
+                                            <div class="progress-container">
+                                                <p class="progress-label-month">07/2022</p>
+                                                <div class="progress m-t-5">
+                                                    <div class="progress-bar progress-bar-striped" role="progressbar"
+                                                        style="width: 91%; background-color:Tomato !important;" aria-valuenow="91" aria-valuemin="0"
+                                                        aria-valuemax="100" name='38_bar'>
+                                                    </div>
+                                                </div>
+                                                <p class="progress-label valor">R$ 450.00</p>
+                                                <p class="progress-label energia">511 kWh</p>
+                                            </div>
+                                            
+                                            <div class="progress-container">
+                                                <p class="progress-label-month">06/2022</p>
+                                                <div class="progress m-t-5">
+                                                    <div class="progress-bar progress-bar-striped" role="progressbar"
+                                                        style="width: 91%; background-color:Tomato !important;" aria-valuenow="91" aria-valuemin="0"
+                                                        aria-valuemax="100" name='39_bar'>
+                                                    </div>
+                                                </div>
+                                                <p class="progress-label valor">R$ 450.00</p>
+                                                <p class="progress-label energia">511 kWh</p>
+                                            </div>
+
+                                        </div>
+
+                                        <!-- Aba 4 ANALISE -->
+                                        
+                                        <div class="tab-pane fade" id="analise" role="tabpanel" aria-labelledby="analise-tab">
+                                            <ul class="list-group">
+                                                <li class="list-group-item bg-light text-black" id='item-mes-referencia'>
+                                                </li>
+                                            </ul>
+                                            <br>
+                                            <ul class="list-group">
+                                                <li class="list-group-item bg-success text-white">
+                                                    <i class="feather icon-check-circle me-3"></i> Seu sistema está ligado e funcionando.
+                                                </li>
+                                                <li class="list-group-item bg-success text-white" id='analise-economia'>
+                                                    <i class="feather icon-trending-down me-3"></i> Esse mês você economizou R$ 350,00 com sua geração de energia.
+                                                </li>
+                                                <li class="list-group-item bg-warning" id='analise-consumo'>
+                                                    <i class="feather icon-zap me-3 text-white"></i> Seu consumo aumentou em média 200 kWh. Sua conta de energia pode aumentar.
+                                                </li>
+                                                <li class="list-group-item bg-danger text-white" id='analise-valor'>
+                                                    <i class="feather icon-eye me-3"></i> Sua conta de energia aumentou em R$ 400,00. Que tal <a href="put_href" class="alert-link">considerar uma expansão do sistema?</a>
+                                                </li>
+                                            </ul>
+                                            <br>
+                                            <ul class="list-group" id="analise-container">
+                                                <li class="list-group-item bg-warning" id="analise-consumo-original">
+                                                    <i class="feather icon-alert-triangle me-3 text-dark"></i> Você não tem créditos disponíveis na concessionária. Considere <a href="put_href" class="alert-link text-black">fazer uma limpeza do sistema conosco.</a>
+                                                </li>
+                                            </ul>
+                                            <br>
+                                            <ul class="list-group">
+                                                <li class="list-group-item bg-warning" id='analise-credito'>
+                                                    <i class="feather icon-alert-triangle me-3 text-dark"></i> Você não tem créditos disponiveis na concessionária. Considere <a href="put_href" class="alert-link text-black">fazer uma limpeza do sistema conosco.</a>
+                                                </li>
+                                            </ul>
+                                            <br>
+                                            <ul class="list-group">
+                                                <li class="list-group-item bg-primary text-white">
+                                                    <i class="feather icon-briefcase me-3"></i> <a href="https://wa.me/555436010629/?text=Ol%C3%A1%2C%20gostaria%20de%20saber%20mais%20sobre%20os%20investimentos%20em%20usinas." target="_blank" style="color: white;"> Clique aqui e saiba mais sobre nossos planos de investimento em usinas solares.</a>
+                                                </li>
+
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <!-- [ Final do conteúdo tabs de análise ]-->
+                                </div>         
+                                <!-- [ Final das tabs de análise ]-->                       
+                            </div>
+                            {% if user_type != 'cliente' %}
+                            <!-- [ Sessão de previsões ]-->
+                            <div class="col-sm-12 m-b-30">
+                                <h5 name="previsao-cliente">Previsões (beta)</h5>
+                                <div class="card previews" id="previsoes-cliente">
+                                    <div class="card-block card-block-preview">
+                                        <h6 class="mb-4">Consumo de Energia</h6>
+                                        <div class="row d-flex align-items-center" id="percent_dif">
+                                        </div>
+                                        
+                                        <div> <!-- aqui deveria ser a div para montar os gráficos-->
+                                            <label for="instalacao-dropdown" class="mt-4">Selecione uma instalação para visualizar a previsão de consumo:</label>
+                                            <select id="instalacao-dropdown" class="form-control mb-4">
+                                            <!-- os gráficos deveriam vir após o select nessa diva -->
+                                            </select>
+                                            <div id="chart-container-preview"></div>
+                                        </div>
+                                    </div> 
+                                </div>
+                            </div>
+                            <!-- [ Final da sessão de previsões ]-->
+                            {% endif %}
+                            <!-- [ Main Content ] end -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <!-- [ Main Content ] end -->            
+    {% plotly_footer %}
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %} 
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock javascripts %}
