@@ -1,0 +1,41 @@
+{% extends "layouts/base-fullscreen.html" %}
+
+{% block title %} Listar Clientes {% endblock %}
+
+{% block content %}
+
+<table>
+    <thead>
+      <tr>
+        <th>Inverter</th>
+        <th>Plant ID</th>
+        <th>Plant Name</th>
+        <th>Energy Today</th>
+        <th>Energy Total</th>
+        <th>Latitude</th>
+        <th>Longitude</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for cliente in clientes %}
+        {% if cliente.energy_total == 0 and cliente.energy_today == 0 %}
+        <tr style="background-color: red;">
+        {% elif cliente.energy_today == 0 %}
+        <tr style="background-color: yellow;">
+        {% else %}
+        <tr>
+        {% endif %}
+            <td>{{ cliente.inverter.name }}</td>
+            <td>{{ cliente.plant_id }}</td>
+            <td>{{ cliente.plant_name }}</td>
+            <td>{{ cliente.energy_today }}</td>
+            <td>{{ cliente.energy_total }}</td>
+            <td>{{ cliente.latitude }}</td>
+            <td>{{ cliente.longitude }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  
+
+{% endblock %}
