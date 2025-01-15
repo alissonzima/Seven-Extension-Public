@@ -1,0 +1,61 @@
+[tool.poetry]
+name = "seven-extension"
+version = "0.1.0"
+description = "Gerenciador web de projetos solares"
+authors = ["alissonzima <alissonzima@gmail.com>"]
+readme = "README.md"
+packages = [{include = "seven_extension"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+django = "^4.2.1"
+growattserver = { git = "https://github.com/alissonzima/PyPi_GrowattServer.git", branch = "master" }
+pytz = "^2023.3"
+folium = "^0.14.0"
+plotly = "^5.15.0"
+django-plotly-dash = "^2.2.1"
+pandas = "^2.0.2"
+dj-database-url = "^2.0.0"
+gunicorn = "^20.1.0"
+whitenoise = "^6.5.0"
+django-environ = "^0.10.0"
+dash-dangerously-set-inner-html = "^0.0.2"
+dash-bootstrap-templates = "^1.0.8"
+channels = {extras = ["daphne"], version = "^4.0.0"}
+asyncio = "^3.4.3"
+dash-extensions = "^1.0.1"
+scipy = {version = "^1.11.1", python = ">=3.9,<3.13"}
+django-apscheduler = "^0.6.2"
+djfernet = "^0.8.1"
+psycopg2 = "^2.9.6"
+selenium = "^4.11.2"
+openpyxl = "^3.1.2"
+django-cors-headers = "^4.2.0"
+python-dotenv = "^1.0.0"
+tenacity = "^8.2.3"
+bs4 = "^0.0.1"
+
+[tool.ward]
+hook_module = ["ward_coverage"]
+
+[tool.poetry.group.dev.dependencies]
+ward = "^0.67.2b0"
+blue = "^0.9.1"
+isort = "^5.12.0"
+mkdocs = "^1.4.3"
+prospector = "1.7.7"
+pip-audit = "^2.5.5"
+ward-coverage = "^0.3.0"
+pylint = "^2.17.4"
+ipykernel = "^6.23.1"
+mkdocstrings-python = "^1.1.0"
+mkdocs-material = "^9.1.14"
+django-debug-toolbar = "^4.1.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.isort]
+profile = "black"
+line_length = 79
